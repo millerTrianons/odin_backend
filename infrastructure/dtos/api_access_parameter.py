@@ -13,7 +13,7 @@ class ApiAccessParameter(SQLModel, table=True):
     parameter_type: str
     parameter_name: str
     external_api_access_uuid: str
-    created_at: Optional[datetime] = Field(default=datetime.now(dt.UTC))
+    created_at: Optional[datetime] = Field(default=datetime.now())
 
     def __init__(
         self,

@@ -16,7 +16,7 @@ class ChatMessage(SQLModel, table=True):
     tool_call: Optional[str]
     content: Optional[str]
     chat_role: str
-    created_at: Optional[datetime] = Field(default=datetime.now(dt.UTC))
+    created_at: Optional[datetime] = Field(default=datetime.now())
 
     def __init__(
             self, 

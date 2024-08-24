@@ -10,7 +10,7 @@ class ChatMessageOriginAndGenerate(SQLModel, table=True):
     uuid: str
     origin_uuid: str
     generate_uuid: str
-    created_at: Optional[datetime] = Field(default=datetime.now(dt.UTC))
+    created_at: Optional[datetime] = Field(default=datetime.now())
 
     def __init__(
         self,

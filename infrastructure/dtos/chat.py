@@ -9,7 +9,7 @@ class Chat(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     uuid: str
     user_site_uuid: str
-    created_at: Optional[datetime] = Field(default=datetime.now(dt.UTC))
+    created_at: Optional[datetime] = Field(default=datetime.now())
 
     def __init__(
             self, 

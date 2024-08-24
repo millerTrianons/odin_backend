@@ -1,6 +1,7 @@
+from io import BytesIO
 import os
-import uuid
 from fastapi.responses import FileResponse
+from fastapi import Response
 from langchain_groq import ChatGroq
 from elevenlabs import VoiceSettings
 from elevenlabs.client import ElevenLabs
@@ -44,7 +45,7 @@ class EvaDataSourceImpl(EvaDataSource):
 
         return EvaDto(response=ai_response.content)
     
-    async def speak(self, content: EvaDto) -> FileResponse:
+    async def speak(self, content: EvaDto) -> Response:
 
         try:
             audio_generator = self.tts.text_to_speech.convert(
@@ -59,18 +60,18 @@ class EvaDataSourceImpl(EvaDataSource):
                     style=0.85,
                 ),
             )
-           
-            audio_file_path = f'/var/data/{uuid.uuid4()}.mp3'
 
-            with open(audio_file_path, 'wb') as f:
-                for chunk in audio_generator:
-                    f.write(chunk)
+            audio_data = BytesIO()
 
-            return FileResponse(
-                path=audio_file_path,
+            for chunk in audio_generator:
+                audio_data.write(chunk)
+
+            return Response(
+                content=audio_data.getvalue(),
                 media_type='audio/mpeg',
-                filename='speech.mp3',   
+                headers={"Content-Disposition": "inline; filename=audio.mp3"}
             )
+           
         except Exception as e:
             print(e)
             raise UnexpectedErrorFailure()

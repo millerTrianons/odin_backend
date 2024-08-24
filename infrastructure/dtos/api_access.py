@@ -14,7 +14,7 @@ class ApiAccess(SQLModel, table=True):
     api_access_method: str
     api_access_path: str
     user_site_route_uuid: str
-    created_at: Optional[datetime] = Field(default=datetime.now(dt.UTC))
+    created_at: Optional[datetime] = Field(default=datetime.now())
 
     def __init__(
             self,

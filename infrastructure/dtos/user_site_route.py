@@ -13,7 +13,7 @@ class UserSiteRoute(SQLModel, table=True):
     route_url: str
     route_description: str
     user_site_uuid: str
-    created_at: Optional[datetime] = Field(default=datetime.now(dt.UTC))
+    created_at: Optional[datetime] = Field(default=datetime.now())
 
     def __init__(
             self, 

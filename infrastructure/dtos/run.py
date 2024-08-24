@@ -10,7 +10,7 @@ class Run(SQLModel, table=True):
     uuid: str
     running_status: str
     chat_uuid: str
-    created_at: Optional[datetime] = Field(default=datetime.now(dt.UTC))
+    created_at: Optional[datetime] = Field(default=datetime.now())
 
     def __init__(
             self, 

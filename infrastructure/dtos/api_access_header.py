@@ -13,7 +13,7 @@ class ApiAcessHeader(SQLModel, table=True):
     header: str
     content: str
     api_access_uuid: str
-    created_at: Optional[datetime] = Field(default=datetime.now(dt.UTC))
+    created_at: Optional[datetime] = Field(default=datetime.now())
 
     def __init__(
         self,

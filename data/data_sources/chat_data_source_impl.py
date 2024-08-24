@@ -36,7 +36,7 @@ class ChatDataSourceImpl(ChatDataSource):
                 'message': chat_message.content, 
                 'role': chat_message.chat_role,
                 'device_origin': chat_message.device_origin,
-                'created_at': datetime.now(dt.UTC),
+                'created_at': datetime.now(),
             }
         }
     
@@ -134,7 +134,7 @@ class ChatDataSourceImpl(ChatDataSource):
         return {
             'id': run_id,
             'status': status[2],
-            'date': datetime.now(dt.UTC)
+            'date': datetime.now()
         }
     
     async def get_response(self, run_id: str) -> object:
