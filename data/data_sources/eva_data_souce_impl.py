@@ -1,10 +1,8 @@
 from io import BytesIO
 import os
-from fastapi.responses import FileResponse
 from fastapi import Response
 from langchain_groq import ChatGroq
-from elevenlabs import VoiceSettings
-from elevenlabs.client import ElevenLabs
+from openai import AsyncOpenAI
 from infrastructure.data_sources.eva_data_source import EvaDataSource
 from infrastructure.dtos.eva_dto import EvaDto
 from dotenv import load_dotenv, find_dotenv
@@ -25,7 +23,7 @@ class EvaDataSourceImpl(EvaDataSource):
             max_retries=2,
         )
 
-        self.tts: ElevenLabs = ElevenLabs(api_key=os.environ.get('ELEVEN_API_KEY'))
+        self.tts: AsyncOpenAI = AsyncOpenAI(api_key=os.environ.get('OPEN_AI_KEY'))
 
     async def ask(self, content: EvaDto) -> EvaDto:
         
@@ -48,7 +46,7 @@ class EvaDataSourceImpl(EvaDataSource):
     async def speak(self, content: EvaDto) -> Response:
 
         try:
-            audio_generator = self.tts.text_to_speech.convert(
+            """  audio_generator = self.tts.text_to_speech.convert(
                 voice_id="MZxV5lN3cv7hi1376O0m",
                 optimize_streaming_latency="0",
                 output_format="mp3_22050_32",
@@ -59,12 +57,18 @@ class EvaDataSourceImpl(EvaDataSource):
                     similarity_boost=0.89,
                     style=0.85,
                 ),
+            ) """
+           
+            audio_generator = await self.tts.audio.speech.create(
+                model='tts-1',
+                voice='nova',
+                input=content.response,
+                speed=.7
             )
 
             audio_data = BytesIO()
 
-            for chunk in audio_generator:
-                audio_data.write(chunk)
+            audio_data.write(audio_generator.content)
 
             return Response(
                 content=audio_data.getvalue(),
