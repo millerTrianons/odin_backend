@@ -1,5 +1,5 @@
 from fastapi.responses import FileResponse
-from domain.core.failures import ParametersNotFound
+from core.failures import ParametersNotFound
 from domain.repositories.eva_repository import EvaRepository
 from infrastructure.data_sources.eva_data_source import EvaDataSource
 from infrastructure.dtos.eva_dto import EvaDto

@@ -7,6 +7,7 @@ from elevenlabs.client import ElevenLabs
 from infrastructure.data_sources.eva_data_source import EvaDataSource
 from infrastructure.dtos.eva_dto import EvaDto
 from dotenv import load_dotenv, find_dotenv
+from core.string_helpers import clean_text
 
 from infrastructure.failures import UnexpectedErrorFailure
 
@@ -19,7 +20,7 @@ class EvaDataSourceImpl(EvaDataSource):
         self.client: ChatGroq = ChatGroq(
             model="mixtral-8x7b-32768",
             temperature=.5,
-            max_tokens=None,
+            max_tokens=os.environ.get('MAX_TOKEN'),
             timeout=None,
             max_retries=2,
         )
@@ -42,7 +43,7 @@ class EvaDataSourceImpl(EvaDataSource):
         
         ai_response = await self.client.ainvoke(messages)
 
-        return EvaDto(response=ai_response.content)
+        return EvaDto(response=clean_text(ai_response.content))
     
     async def speak(self, content: EvaDto) -> Response:
 
