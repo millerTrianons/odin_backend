@@ -51,7 +51,7 @@ class EvaDataSourceImpl(EvaDataSource):
                 voice_id="MZxV5lN3cv7hi1376O0m",
                 optimize_streaming_latency="0",
                 output_format="mp3_22050_32",
-                text=content.response[:30],
+                text=content.response,
                 model_id="eleven_multilingual_v2",
                 voice_settings=VoiceSettings(
                     stability=0.1,
@@ -66,7 +66,7 @@ class EvaDataSourceImpl(EvaDataSource):
                 audio_file.write(chunk)
             
             audio_file.seek(0)
-            
+
             return  Response(
                 content=audio_file.getvalue(),
                 media_type='audio/mpeg',
