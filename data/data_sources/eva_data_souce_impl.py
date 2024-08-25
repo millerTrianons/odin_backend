@@ -51,7 +51,7 @@ class EvaDataSourceImpl(EvaDataSource):
                 voice_id="MZxV5lN3cv7hi1376O0m",
                 optimize_streaming_latency="0",
                 output_format="mp3_22050_32",
-                text=content.response[:30], # Remove next branch
+                text=content.response[:30],
                 model_id="eleven_multilingual_v2",
                 voice_settings=VoiceSettings(
                     stability=0.1,
@@ -59,23 +59,19 @@ class EvaDataSourceImpl(EvaDataSource):
                     style=0.85,
                 ),
             )
-           
-            """ audio_generator = await self.tts.audio.speech.create(
-                model='tts-1',
-                voice='nova',
-                input=content.response,
-                speed=.7
-            ) """
 
-            audio_data = BytesIO()
+            audio_file = BytesIO()
 
-            audio_data.write(audio_generator)
-
-            return Response(
-                content=audio_data.getvalue(),
+            for chunk in audio_generator:
+                audio_file.write(chunk)
+            
+            audio_file.seek(0)
+            
+            return  Response(
+                content=audio_file.getvalue(),
                 media_type='audio/mpeg',
                 headers={"Content-Disposition": "inline; filename=audio.mp3"}
-            )
+            ) 
            
         except Exception as e:
             print(e)
