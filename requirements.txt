@@ -78,6 +78,7 @@ multidict==6.0.5
 mypy-extensions==1.0.0
 namex==0.0.8
 newrelic==9.13.0
+nltk==3.9.1
 numba==0.60.0
 numpy==1.26.4
 openai==1.42.0

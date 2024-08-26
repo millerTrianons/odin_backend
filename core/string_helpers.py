@@ -1,6 +1,7 @@
 import re
 
-def clean_text(text):
+
+def clean_text(text: str) -> str:
     # Regex to find emojis and special symbols
     emoji_pattern = re.compile(
         '['
@@ -21,3 +22,4 @@ def clean_text(text):
     # Replace newlines with spaces
     text = text.replace('\n', ' ')
     return text
+

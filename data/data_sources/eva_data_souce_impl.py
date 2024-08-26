@@ -52,7 +52,7 @@ class EvaDataSourceImpl(EvaDataSource):
                 voice_id="MZxV5lN3cv7hi1376O0m",
                 optimize_streaming_latency="0",
                 output_format="mp3_22050_32",
-                text=content.response,
+                text=content.response[:200],
                 model_id="eleven_multilingual_v2",
                 voice_settings=VoiceSettings(
                     stability=0.1,

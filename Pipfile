@@ -163,6 +163,7 @@ websockets = "==13.0"
 werkzeug = "==3.0.4"
 wrapt = "==1.16.0"
 yarl = "==1.9.4"
+nltk = "*"
 
 [dev-packages]
 

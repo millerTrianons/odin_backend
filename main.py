@@ -27,7 +27,7 @@ app.add_middleware(
 
 app.add_middleware(GZipMiddleware)
 
-
 ErrorHandling.create(app)
+
 RoutingFactory.create(app)
 
