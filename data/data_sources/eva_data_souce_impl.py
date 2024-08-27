@@ -1,3 +1,4 @@
+from datetime import datetime
 from io import BytesIO
 import os
 from sqlmodel import delete, select, desc
@@ -27,10 +28,10 @@ class EvaDataSourceImpl(EvaDataSource):
 
         self.client: ChatGroq = ChatGroq(
             model="mixtral-8x7b-32768",
-            temperature=.5,
-            max_tokens=os.environ.get('MAX_TOKEN', 300),
+            temperature=os.environ.get('TEMPERATURE', .7),
+            max_tokens=os.environ.get('MAX_TOKEN', 600),
             timeout=None,
-            max_retries=2,
+            max_retries=2
         )
 
         self.tts: ElevenLabs = ElevenLabs(api_key=os.environ.get('ELEVEN_API_KEY'))
@@ -67,9 +68,9 @@ class EvaDataSourceImpl(EvaDataSource):
         result = await self.connection.get(statement)
 
         result.sort(key= lambda x: x.id)
-        
+ 
         messages = [
-            ('system', system_prompt),
+            ('system', f'{system_prompt}\n Hoje é dia {datetime.strftime(datetime.now(), "%d/%m/%Y")}'),
            *[(MessageRole(message.role).name, message.content) for message in result],
             ('human', content.question)
         ]
