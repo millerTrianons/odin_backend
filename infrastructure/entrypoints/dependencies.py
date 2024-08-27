@@ -72,6 +72,14 @@ from usecases.adminstrator_usecase import AdministratorUsecase
 
 from usecases.eva_usecase import EvaUseCase
 
+def get_sql_connection_service() -> SqlConnectionService:
+    return SqlConnectionService()
+
+def get_eva_data_source(
+        connection: SqlConnectionService = Depends(get_sql_connection_service)
+) -> EvaDataSource:
+    return EvaDataSourceImpl(connection)
+
 def get_chat_repository(
         data_source: ChatDataSource = Depends(ChatDataSourceImpl),
 ) -> ChatRepository:
@@ -103,7 +111,7 @@ def get_external_apis_repository(
     return ExternalApiRepositoryImpl(data_source)
 
 def get_eva_repository(
-        data_source: EvaDataSource = Depends(EvaDataSourceImpl)
+        data_source: EvaDataSource = Depends(get_eva_data_source)
 ) -> EvaRepository:
     return EvaRepositoryImpl(data_source)
 

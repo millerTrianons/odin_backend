@@ -32,3 +32,9 @@ class EvaRepositoryImpl(EvaRepository):
             raise ParametersNotFound()
 
         return await self.data_source.speak(content)
+    
+    async def add_prompt(self, prompt: str) -> None:
+        return await self.data_source.add_prompt(prompt)
+    
+    async def reset_prompt_and_messages(self) -> None:
+        return await self.data_source.reset_prompt_and_messages()

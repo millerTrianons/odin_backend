@@ -8,19 +8,25 @@ class SqlConnectionService:
         self._engine=create_engine(url=os.environ.get('DB_URL'))
         self._session: Session = None
 
-    async def get_one(self, statement: str) -> Any:
+    async def get_one(self, statement) -> Any:
         """Ready from database and return only the first record"""
         result = None
         with Session(self._engine) as session:
-            results = session.exec(text(statement))
+            if isinstance(statement, str):
+                results = session.exec(text(statement))
+            else:
+                results = session.exec(statement)
             result = results.first()
         return result
 
-    async def get(self, statement: str) -> List[Any]:
+    async def get(self, statement) -> List[Any]:
         """Ready from database and return the records"""
         result = None
         with Session(self._engine) as session:
-            results = session.exec(text(statement))
+            if isinstance(statement, str):
+                results = session.exec(text(statement))
+            else:
+                results = session.exec(statement)
             result = results.all()
         return result
 
@@ -36,12 +42,15 @@ class SqlConnectionService:
         if instances and commit:
             self._session.commit()
 
-    async def update(self, statement: str, commit: bool = True) -> Any:
+    async def update(self, statement, commit: bool = True) -> Any:
 
         if not self._session or not self._session.is_active:
             self._session = Session(self._engine)
 
-        self._session.exec(text(statement))
+        if isinstance(statement, str):
+          self._session.exec(text(statement))  
+        else:
+            self._session.exec(statement)
 
         if commit:
             self._session.commit()
