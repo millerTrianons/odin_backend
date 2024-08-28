@@ -1,3 +1,4 @@
+from typing import AsyncIterator
 from fastapi.responses import FileResponse
 from core.failures import ParametersNotFound
 from domain.repositories.eva_repository import EvaRepository
@@ -25,13 +26,13 @@ class EvaRepositoryImpl(EvaRepository):
 
         return result.to_eva_data_ask_out()
     
-    async def speak(self, content: EvaDataSpeakIn) -> FileResponse:
+    def speak(self, content: EvaDataSpeakIn) -> AsyncIterator[bytes]:
         content = EvaDto.from_eva_speak_in(content)
 
         if not content.response:
             raise ParametersNotFound()
 
-        return await self.data_source.speak(content)
+        return self.data_source.speak(content)
     
     async def add_prompt(self, prompt: str) -> None:
         return await self.data_source.add_prompt(prompt)

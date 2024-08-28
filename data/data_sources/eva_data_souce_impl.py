@@ -1,8 +1,9 @@
+import asyncio
 from datetime import datetime
 from io import BytesIO
 import os
+from typing import AsyncIterator, Iterator
 from sqlmodel import delete, select, desc
-from fastapi import Response
 from langchain_groq import ChatGroq
 from elevenlabs import VoiceSettings
 from elevenlabs.client import ElevenLabs
@@ -88,10 +89,9 @@ class EvaDataSourceImpl(EvaDataSource):
 
         return EvaDto(response=clear_text)
     
-    async def speak(self, content: EvaDto) -> Response:
-
-        try:
-            audio_generator = self.tts.text_to_speech.convert(
+    def speak(self, content: EvaDto) -> AsyncIterator[bytes]:
+        def sync_audio_generator() -> Iterator[bytes]:
+            return self.tts.text_to_speech.convert_as_stream(
                 voice_id=os.environ.get('VOICE_ID', 'MZxV5lN3cv7hi1376O0m'),
                 optimize_streaming_latency="0",
                 output_format="mp3_22050_32",
@@ -103,23 +103,16 @@ class EvaDataSourceImpl(EvaDataSource):
                     style=0.85,
                 ),
             )
-
-            audio_file = BytesIO()
-
-            for chunk in audio_generator:
-                audio_file.write(chunk)
+        
+        async def async_audio_generator() -> AsyncIterator[bytes]:
             
-            audio_file.seek(0)
+            loop = asyncio.get_event_loop()
+            audio_generator = await loop.run_in_executor(None, lambda: sync_audio_generator())
+            
+            for chunk in audio_generator:
+                yield chunk
 
-            return  Response(
-                content=audio_file.getvalue(),
-                media_type='audio/mpeg',
-                headers={"Content-Disposition": "inline; filename=audio.mp3"}
-            ) 
-           
-        except Exception as e:
-            print(e)
-            raise UnexpectedErrorFailure()
+        return async_audio_generator()
         
     async def add_prompt(self, prompt: str) -> None:
         statement = delete(EvaPrompt)
@@ -136,3 +129,5 @@ class EvaDataSourceImpl(EvaDataSource):
         statement = delete(EvaMessage)
 
         await self.connection.update(statement)
+
+    

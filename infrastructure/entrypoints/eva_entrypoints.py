@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse
 from infrastructure.entrypoints.dependencies import get_eva_usecase
 from presentation.eva_data import EvaDataAskIn, EvaDataSpeakIn, EvaDataAskOut
 from usecases.eva_usecase import EvaUseCase
+from fastapi.responses import StreamingResponse
 
 router = APIRouter()
 
@@ -28,8 +29,9 @@ async def ask(
 async def speak(
     content: EvaDataSpeakIn = Body(...),
     usecase: EvaUseCase = Depends(get_eva_usecase),
-) -> FileResponse:
-    return await usecase.response(content)
+) -> StreamingResponse:
+    
+    return StreamingResponse(content=usecase.speak(content))
 
 @router.post(
         '/prompt',

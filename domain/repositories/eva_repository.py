@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import AsyncIterator
 
 from fastapi.responses import FileResponse
 
@@ -10,7 +11,7 @@ class EvaRepository(ABC):
         raise NotImplementedError()
     
     @abstractmethod
-    async def speak(self, content: EvaDataSpeakIn) -> FileResponse:
+    def speak(self, content: EvaDataSpeakIn) -> AsyncIterator[bytes]:
         raise NotImplementedError()
     
     @abstractmethod
