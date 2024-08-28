@@ -107,7 +107,10 @@ class EvaDataSourceImpl(EvaDataSource):
         async def async_audio_generator() -> AsyncIterator[bytes]:
             
             loop = asyncio.get_event_loop()
-            audio_generator = await loop.run_in_executor(None, lambda: sync_audio_generator())
+            audio_generator = await loop.run_in_executor(
+                    None, 
+                    lambda: sync_audio_generator()
+                )
             
             for chunk in audio_generator:
                 yield chunk
