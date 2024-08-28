@@ -89,7 +89,7 @@ class EvaDataSourceImpl(EvaDataSource):
 
         return EvaDto(response=clear_text)
     
-    def speak(self, content: EvaDto) -> AsyncIterator[bytes]:
+    def speak(self, content: EvaDto) -> Iterator[bytes]:
 
         return self.tts.text_to_speech.convert_as_stream(
                 voice_id=os.environ.get('VOICE_ID', 'MZxV5lN3cv7hi1376O0m'),
