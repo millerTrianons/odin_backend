@@ -1,3 +1,4 @@
+import asyncio
 from typing import AsyncIterator
 from fastapi.responses import FileResponse
 from core.failures import ParametersNotFound
@@ -32,7 +33,19 @@ class EvaRepositoryImpl(EvaRepository):
         if not content.response:
             raise ParametersNotFound()
 
-        return self.data_source.speak(content)
+        async def async_audio_generator() -> AsyncIterator[bytes]:
+            
+            loop = asyncio.get_event_loop()
+
+            audio_generator = await loop.run_in_executor(
+                    None, 
+                    lambda: self.data_source.speak(content)
+                )
+            
+            for chunk in audio_generator:
+                yield chunk
+
+        return async_audio_generator()
     
     async def add_prompt(self, prompt: str) -> None:
         return await self.data_source.add_prompt(prompt)

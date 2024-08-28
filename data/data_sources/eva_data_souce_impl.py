@@ -90,8 +90,8 @@ class EvaDataSourceImpl(EvaDataSource):
         return EvaDto(response=clear_text)
     
     def speak(self, content: EvaDto) -> AsyncIterator[bytes]:
-        def sync_audio_generator() -> Iterator[bytes]:
-            return self.tts.text_to_speech.convert_as_stream(
+
+        return self.tts.text_to_speech.convert_as_stream(
                 voice_id=os.environ.get('VOICE_ID', 'MZxV5lN3cv7hi1376O0m'),
                 optimize_streaming_latency="0",
                 output_format="mp3_22050_32",
@@ -103,19 +103,6 @@ class EvaDataSourceImpl(EvaDataSource):
                     style=0.85,
                 ),
             )
-        
-        async def async_audio_generator() -> AsyncIterator[bytes]:
-            
-            loop = asyncio.get_event_loop()
-            audio_generator = await loop.run_in_executor(
-                    None, 
-                    lambda: sync_audio_generator()
-                )
-            
-            for chunk in audio_generator:
-                yield chunk
-
-        return async_audio_generator()
         
     async def add_prompt(self, prompt: str) -> None:
         statement = delete(EvaPrompt)
